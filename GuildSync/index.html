@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>GuildSync | Documentation</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <header class="top">
+      <a class="brand" href="#overview"
+        ><span class="mark">GS</span>GuildSync Docs</a
+      ><button
+        class="theme-toggle"
+        type="button"
+        aria-label="Switch to dark mode"
+        aria-pressed="false"
+      >
+        <i class="theme-icon moon" data-lucide="moon" aria-hidden="true"></i
+        ><i class="theme-icon sun" data-lucide="sun" aria-hidden="true"></i
+        ><span class="theme-thumb" aria-hidden="true"></span></button
+      ><span class="version">1.0.0 Alpha · Fabric 1.20.1</span>
+    </header>
+    <div class="layout">
+      <aside class="side">
+        <h4>GETTING STARTED</h4>
+        <a href="#overview">Overview</a><a href="#install">Installation</a
+        ><a href="#discord">Discord bot setup</a>
+        <h4>CONFIGURATION</h4>
+        <a href="#config">config.yml</a><a href="#data">data.yml</a>
+        <h4>FEATURES</h4>
+        <a href="#commands">Slash commands</a><a href="#bridge">Chat bridge</a
+        ><a href="#whitelist">Whitelist</a>
+        <h4>DEVELOPMENT</h4>
+        <a href="#development">Feature list</a
+        ><a href="#version-tracker">Version tracker</a>
+        <h4>HELP</h4>
+        <a href="#troubleshooting">Troubleshooting</a
+        ><a href="#security">Security</a>
+      </aside>
+      <main>
+        <section id="overview">
+          <p class="eyebrow">SERVER-SIDE FABRIC MOD</p>
+          <h1>GuildSync Documentation</h1>
+          <p class="lead">
+            Connect a Fabric Minecraft server to Discord with live server
+            information, slash commands, a configurable chat bridge and secure
+            admin controls.
+          </p>
+          <div class="box">
+            <strong>Alpha release.</strong> Test GuildSync on a backup server
+            before production use.
+          </div>
+        </section>
+        <section id="install">
+          <p class="eyebrow">GETTING STARTED</p>
+          <h2>Installation</h2>
+          <ol>
+            <li>Install Fabric Loader for Minecraft 1.20.1 on the server.</li>
+            <li>Install Fabric API for 1.20.1.</li>
+            <li>
+              Copy GuildSync and Fabric API to the server
+              <code>mods</code> folder.
+            </li>
+            <li>Start the server once to generate configuration files.</li>
+          </ol>
+          <pre><code>server/
+├─ mods/
+│  ├─ guildsync-1.0.0+1.20.1.jar
+│  └─ fabric-api-*.jar
+└─ config/guildsync/
+   ├─ config.yml
+   ├─ data.yml
+   └─ GUILDSYNC_TUTORIAL.md</code></pre>
+          <div class="note">
+            Java 17 or newer is required. Players do not need GuildSync
+            installed.
+          </div>
+        </section>
+        <section id="discord">
+          <p class="eyebrow">GETTING STARTED</p>
+          <h2>Discord bot setup</h2>
+          <ol>
+            <li>
+              Create an application in the
+              <a href="https://discord.com/developers/applications"
+                >Discord Developer Portal</a
+              >.
+            </li>
+            <li>Create a bot and copy its token.</li>
+            <li>Enable Message Content Intent for the chat bridge.</li>
+            <li>
+              Invite the bot with the <code>bot</code> and
+              <code>applications.commands</code> scopes.
+            </li>
+            <li>
+              Enable Developer Mode in Discord and copy the Guild, channel and
+              role IDs.
+            </li>
+          </ol>
+          <div class="box">
+            <strong>Keep the token secret.</strong> Never publish config.yml
+            while it contains a bot token.
+          </div>
+        </section>
+        <section id="config">
+          <p class="eyebrow">CONFIGURATION</p>
+          <h2>config.yml</h2>
+          <pre><code>bot:
+  token: "PUT_YOUR_BOT_TOKEN_HERE"
+  guild-id: "YOUR_DISCORD_GUILD_ID"
+modules:
+  chat-bridge: true
+  whitelist: true
+  say: false
+info-embed:
+  channel-id: "YOUR_STATUS_CHANNEL_ID"
+chat-bridge:
+  channel-id: "YOUR_CHAT_CHANNEL_ID"
+security:
+  admin-role-ids: ["YOUR_ADMIN_ROLE_ID"]</code></pre>
+          <p>
+            Edit configuration while the server is stopped, then restart it.
+          </p>
+        </section>
+        <section id="data">
+          <p class="eyebrow">CONFIGURATION</p>
+          <h2>data.yml</h2>
+          <p>
+            GuildSync manages this file. It stores the live status message ID so
+            restarts update the existing Discord embed instead of creating
+            duplicates.
+          </p>
+        </section>
+        <section id="commands">
+          <p class="eyebrow">FEATURES</p>
+          <h2>Slash commands</h2>
+          <table>
+            <tr>
+              <th>Command</th>
+              <th>Description</th>
+              <th>Admin</th>
+            </tr>
+            <tr>
+              <td><code>/status</code></td>
+              <td>Server status, TPS and player count.</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td><code>/players</code></td>
+              <td>Lists online players.</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td><code>/server</code></td>
+              <td>Configured server information.</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td><code>/info</code></td>
+              <td>Creates or updates the live embed.</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td><code>/say</code></td>
+              <td>Sends Discord text to Minecraft.</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td><code>/whitelist</code></td>
+              <td>Add, remove or list whitelist players.</td>
+              <td>Yes</td>
+            </tr>
+          </table>
+        </section>
+        <section id="bridge">
+          <p class="eyebrow">FEATURES</p>
+          <h2>Chat bridge</h2>
+          <p>
+            Enable <code>modules.chat-bridge</code> and set
+            <code>chat-bridge.channel-id</code>. Minecraft player messages are
+            relayed to that Discord channel and Discord messages return to
+            Minecraft.
+          </p>
+        </section>
+        <section id="whitelist">
+          <p class="eyebrow">FEATURES</p>
+          <h2>Whitelist management</h2>
+          <p>
+            Enable <code>modules.whitelist</code> and configure an admin role.
+          </p>
+          <pre><code>/whitelist action:add player:ExamplePlayer
+/whitelist action:remove player:ExamplePlayer
+/whitelist action:list</code></pre>
+        </section>
+        <section id="development">
+          <p class="eyebrow">DEVELOPMENT</p>
+          <h2>Feature list</h2>
+          <p>Current GuildSync development status.</p>
+          <table>
+            <tr>
+              <th>Feature</th>
+              <th>Status</th>
+              <th>Notes</th>
+            </tr>
+            <tr>
+              <td>Discord bot connection</td>
+              <td>Complete</td>
+              <td>Token-based bot connection and status.</td>
+            </tr>
+            <tr>
+              <td>Server status commands</td>
+              <td>Complete</td>
+              <td>TPS, player list and server information.</td>
+            </tr>
+            <tr>
+              <td>Persistent info embed</td>
+              <td>Complete</td>
+              <td>Updates the same message after a restart.</td>
+            </tr>
+            <tr>
+              <td>Role-based admin controls</td>
+              <td>Complete</td>
+              <td>Role IDs protect admin commands.</td>
+            </tr>
+            <tr>
+              <td>Two-way chat bridge</td>
+              <td>Complete</td>
+              <td>Requires Message Content Intent.</td>
+            </tr>
+            <tr>
+              <td>Whitelist management</td>
+              <td>Complete</td>
+              <td>Add, remove and list actions through Discord.</td>
+            </tr>
+            <tr>
+              <td>Fabric 1.21.1 port</td>
+              <td>Planned</td>
+              <td>Next Fabric target.</td>
+            </tr>
+            <tr>
+              <td>NeoForge port</td>
+              <td>Not planned</td>
+              <td>No NeoForge build is maintained.</td>
+            </tr>
+          </table>
+        </section>
+        <section id="version-tracker">
+          <p class="eyebrow">DEVELOPMENT</p>
+          <h2>Supported game versions</h2>
+          <p>
+            This page tracks GuildSync ports and support goals. We do not
+            provide release dates; each Minecraft version receives its own mod
+            JAR. Paper is listed for clarity, but it requires a separate plugin
+            implementation rather than a mod port.
+          </p>
+          <table>
+            <tr>
+              <th>Versions</th>
+              <th>Fabric</th>
+              <th>NeoForge</th>
+              <th>Forge</th>
+              <th>Paper</th>
+            </tr>
+            <tr>
+              <td>26.3</td>
+              <td>Planned</td>
+              <td>Planned</td>
+              <td>Planned</td>
+              <td>Planned</td>
+            </tr>
+            <tr>
+              <td>26.2</td>
+              <td>Planned</td>
+              <td>Planned</td>
+              <td>Planned</td>
+              <td>Planned</td>
+            </tr>
+            <tr>
+              <td>26.1</td>
+              <td>Planned</td>
+              <td>Planned</td>
+              <td>Planned</td>
+              <td>Planned</td>
+            </tr>
+            <tr>
+              <td>1.21.11</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+            </tr>
+            <tr>
+              <td>1.21.10</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+            </tr>
+            <tr>
+              <td>1.21.9</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+            </tr>
+            <tr>
+              <td>1.21.8</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+            </tr>
+            <tr>
+              <td>1.21.7</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+            </tr>
+            <tr>
+              <td>1.21.6</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+            </tr>
+            <tr>
+              <td>1.21.5</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+            </tr>
+            <tr>
+              <td>1.21.4</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+            </tr>
+            <tr>
+              <td>1.21.3</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+            </tr>
+            <tr>
+              <td>1.21.2</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+            </tr>
+            <tr>
+              <td>1.21.1</td>
+              <td>Planned</td>
+              <td>Planned</td>
+              <td>Planned</td>
+              <td>Planned</td>
+            </tr>
+            <tr>
+              <td>1.20.6</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+            </tr>
+            <tr>
+              <td>1.20.5</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+            </tr>
+            <tr>
+              <td>1.20.4</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+            </tr>
+            <tr>
+              <td>1.20.3</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+            </tr>
+            <tr>
+              <td>1.20.2</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+              <td>Skipped</td>
+              <td>Unavailable</td>
+            </tr>
+            <tr>
+              <td>1.20.1</td>
+              <td>In Progress (Alpha)</td>
+              <td>Planned</td>
+              <td>Planned</td>
+              <td>Planned</td>
+            </tr>
+          </table>
+          <h3>What these statuses mean</h3>
+          <ul>
+            <li>
+              <strong>In Progress:</strong> GuildSync is actively being
+              developed or tested for this version.
+            </li>
+            <li>
+              <strong>Planned:</strong> A target version, but development has
+              not started.
+            </li>
+            <li>
+              <strong>Skipped:</strong> No backport is planned for this version.
+            </li>
+            <li>
+              <strong>Available:</strong> A playable release exists, but no
+              active support is promised.
+            </li>
+            <li>
+              <strong>Unavailable:</strong> No build exists and a port is not
+              planned.
+            </li>
+          </ul>
+        </section>
+        <section id="troubleshooting">
+          <p class="eyebrow">HELP</p>
+          <h2>Troubleshooting</h2>
+          <details>
+            <summary>Bot does not come online</summary>
+            <p>
+              Verify the bot token and check GuildSync lines in the server log.
+            </p>
+          </details>
+          <details>
+            <summary>Slash commands are missing</summary>
+            <p>
+              Check the Guild ID and reinvite the bot with
+              applications.commands.
+            </p>
+          </details>
+          <details>
+            <summary>Chat bridge does not receive messages</summary>
+            <p>Enable Message Content Intent and verify the channel ID.</p>
+          </details>
+        </section>
+        <section id="security">
+          <p class="eyebrow">HELP</p>
+          <h2>Security</h2>
+          <ul>
+            <li>Keep the token private.</li>
+            <li>Use a dedicated Discord role for administrators.</li>
+            <li>Keep destructive/admin modules disabled unless needed.</li>
+          </ul>
+        </section>
+      </main>
+      <aside class="onpage">
+        <p>ON THIS PAGE</p>
+        <a href="#install">Installation</a><a href="#config">Configuration</a
+        ><a href="#commands">Commands</a
+        ><a href="#troubleshooting">Troubleshooting</a>
+      </aside>
+    </div>
+    <script src="https://unpkg.com/lucide@1.61.0/dist/umd/lucide.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>
