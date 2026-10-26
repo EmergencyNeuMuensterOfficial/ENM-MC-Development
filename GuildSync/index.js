@@ -62,8 +62,8 @@ function renderVersionTracker() {
     if (kind === "country-flags") {
       return [
         version,
+        version === "1.20.1" ? "Available" : "Planned",
         "Unavailable",
-        version === "1.21.1" ? "Available" : "Unavailable",
         "Unavailable",
         "Unavailable",
       ];
